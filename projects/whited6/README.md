@@ -1,2 +1,2 @@
 David White
-This is my assigment-1 submission
+This is my assignment-1 submission
