@@ -651,7 +651,8 @@ int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameSt
     int temphand[MAX_HAND];// moved above the if statement
     int drawntreasure=0;
     int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //Refactored-changed the counter to equal 1 instead of 0
+    int z = 1;// this is the counter for the temp hand
    
     while(drawntreasure<2){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
@@ -660,7 +661,7 @@ int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameSt
         drawCard(currentPlayer, state);
         cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
         if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-            drawntreasure--;//bug introduced drawntreasure++;
+            drawntreasure++;
         else{
             temphand[z]=cardDrawn;
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
@@ -771,9 +772,9 @@ int remodelRef(int card, int choice1, int choice2, int choice3, struct gameState
     
     //discard card from hand
     discardCard(handPos, currentPlayer, state, 0);
-    
+    //Refactoed- Added an extra card to be discarded changed to +1
     //discard trashed card
-    for (i = 0; i < state->handCount[currentPlayer]; i++)
+    for (i = 0; i < state->handCount[currentPlayer]+1; i++)
     {
         if (state->hand[currentPlayer][i] == j)
         {
@@ -799,8 +800,9 @@ int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState
     }
     else if (choice1 == 2)
     {
+        //Refactored added an extra coin if choice 2 is selected-changed from 2 to 3
         //+2 coins
-        state->coins = state->coins + 2;
+        state->coins = state->coins + 3;
     }
     else
     {
@@ -808,10 +810,10 @@ int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState
         discardCard(choice2, currentPlayer, state, 1);
         discardCard(choice3, currentPlayer, state, 1);
     }
-    /*Introduced error-commented out the following lines
+
     //discard card from hand
     discardCard(handPos, currentPlayer, state, 0);
-     */
+    
     return 0;
 }
 /*Function: cardEffect
@@ -864,7 +866,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	z=z-1;
       }
       return 0;
-			
+	*/		
     case council_room:
       //+4 Cards
       for (i = 0; i < 4; i++)
@@ -888,7 +890,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       discardCard(handPos, currentPlayer, state, 0);
 			
       return 0;
-			*/
+			
     case feast:
             //call to refactored function
             feastRef(card, choice1, choice2, choice3, state, handPos, bonus);
