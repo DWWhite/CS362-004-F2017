@@ -129,10 +129,10 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
    1, others to 0 */
 
 //Refactored functions from cardEffect function
-int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus);
-int smithyRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus);
-int feastRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus);
-int remodelRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus);
-int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus);
+int adventurerRef( struct gameState *state);
+int smithyRef(struct gameState *state, int handPos);
+int feastRef(int choice1,  struct gameState *state);
+int remodelRef(int choice1, int choice2, struct gameState *state, int handPos);
+int stewardRef(int choice1, int choice2, int choice3, struct gameState *state, int handPos);
 
 #endif

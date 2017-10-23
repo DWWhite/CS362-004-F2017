@@ -1,7 +1,7 @@
 //
-//  cardtest1.c
+//  cardtest4.c
 //  Unit Tests Assignment3
-// Test for Adventurer
+// Test for Steward
 //  Created by David White on 10/21/17.
 //  Copyright © 2017 Oregon State University. All rights reserved.
 //
@@ -28,43 +28,75 @@ int main() {
     int k[10]={adventurer,council_room,feast,gardens, mine, remodel, smithy, village, baron,
         great_hall};
     int count=0;
+    int choice1,choice2,choice3,handpos;
     struct gameState  G, Backup;
-    initializeGame(numPlayer, k, seed, &G);
-    int turn = G.whoseTurn=0;
-    for(int i=0;i<=treasure_map;i++){
-        G.deck[turn][i]=4;
-    }
-    G.deckCount[0]=4*treasure_map;
-    shuffle(turn,&G);
-    Backup=G;                               //back up game state to compare to after tests.
+    int turn=G.whoseTurn;
     
-    adventurerRef(&G);
-    int deckDiff=Backup.deckCount[0]-G.deckCount[0];
-    int handDiff=Backup.handCount[0]-G.handCount[0];
-    int discardDiff=Backup.discardCount[0]-G.discardCount[0];
-    printf("Testing Adventurer\n");
-    printf("Deck Before: %d  After:%d\n",Backup.deckCount[0],G.deckCount[0]);
-    printf("Hand Before: %d  After:%d\n",Backup.handCount[0],G.handCount[0]);
-    printf("\tHand Before: ");
-    for (int i=0;i<Backup.handCount[turn];i++){
-        printf("%s ",card[Backup.hand[turn][i]]);
+    for(choice1=1;choice1<=3;choice1++){
+        initializeGame(numPlayer, k, seed, &G);
+        G.hand[turn][G.handCount[turn]]=smithy;
+        G.handCount[turn]++;
+        choice2=G.handCount[turn];
+        G.hand[turn][G.handCount[turn]]=adventurer;
+        G.handCount[turn]++;
+        choice3=G.handCount[turn];
+        G.hand[turn][G.handCount[turn]]=steward;
+        G.handCount[turn]++;
+        handpos=G.handCount[turn];        Backup=G;
+        stewardRef(choice1, choice2, choice3, &G, handpos);
+        printf("\n\nTesting Steward\n\n");
+        printf("Choice: %d\n",choice1);
+        printf("Hand Before: %d  After:%d\n",Backup.handCount[turn],G.handCount[turn]);
+        printf("\tHand Before: ");
+        for (int i=0;i<Backup.handCount[turn];i++){
+            printf("%s ",card[Backup.hand[turn][i]]);
+        }
+        printf("\n\tHand After: ");
+        for (int i=0;i<G.handCount[turn];i++){
+            printf("%s ",card[G.hand[turn][i]]);
+        }
+        //Deck
+        printf("\nDeck Before: %d  After:%d\n",Backup.deckCount[turn],G.deckCount[turn]);
+        printf("\tDeckBefore: ");
+        for (int i=0;i<Backup.deckCount[turn];i++){
+            printf("%s ",card[Backup.deck[turn][i]]);
+        }
+        printf("\n\tDeckAfter: ");
+        for (int i=0;i<G.deckCount[turn];i++){
+            printf("%s ",card[G.deck[turn][i]]);
+        }
+        
+        //Discard
+        printf("\nDiscard Before: %d  After:%d\n",Backup.discardCount[turn],G.discardCount[turn]);
+        printf("\tDiscard Before: ");
+        for (int i=0;i<Backup.discardCount[turn];i++){
+            printf("%s ",card[Backup.discard[turn][i]]);
+        }
+        printf("\n\tHand After: ");
+        for (int i=0;i<G.discardCount[turn];i++){
+            printf("%s ",card[G.discard[turn][i]]);
+        }
+        printf("\nCoins Before: %d  After: %d\n",Backup.coins, G.coins);
+        
+        if(choice1==1){
+            if(G.handCount[turn] -Backup.handCount[turn]!=1){
+               printf("****Error--- correct number of cards not added to hand");
+                count++;
+            }
+        }
+        if(choice1==2){
+            if(G.coins!=(Backup.coins +2)){
+                printf("****Error---incorrect number of coins added to hand");
+                count++;
+            }
+        }
+        if(choice1==3){
+            if(Backup.handCount[turn] -G.handCount[turn]!=3){
+                printf("****Error---incorrect number of cards trashed from hand");
+                count++;
+            }
+        }
     }
-    printf("\n\tHand After: ");
-    for (int i=0;i<G.handCount[turn];i++){
-        printf("%s ",card[G.hand[turn][i]]);
-    }
-    printf("\nDiscard Before: %d After:%d\n",Backup.discardCount[0],G.discardCount[0]);
-    
-    if((abs(handDiff))>2){
-        printf("***Error--- Too many treasure cards added to hand");
-        count++;
-    }
-    
-    if((deckDiff +(handDiff+discardDiff)!=0)){
-        printf("***Error--- cards not moved to proper location");
-        count++;
-    }
-    
     if(count>0)
         printf("\n****Found %d errors****\n",count);
     else

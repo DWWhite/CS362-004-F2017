@@ -24,6 +24,7 @@ int main() {
     int k[10]={adventurer,council_room,feast,gardens, mine, remodel, smithy, village, baron, great_hall};
     struct gameState G,  Backup;
     int r, ret_val;
+    int count=0;
     char card[27][15]={"Curse","Estate","Duchy","Province","Copper","Silver","Gold","Adventurer","Council_room","Feast","Gardens",
         "Mine","Remodel","Smithy","Village","Baron","Great Hall", "Minion","Steward","Tribute","Ambassador","Cutpurse"
         , "Embargo","Outpost", "Salvager","Sea Hag","Treasure Map"};
@@ -51,9 +52,19 @@ int main() {
                         printf("Expecting %d cards in deck, Actual cards in deck: %d \n",Backup.deckCount[0]+1, G.deckCount[0]);
                         printf("Expecting supplyCount to be empty for Smithy, Smithy supplyCount: %d\n",G.supplyCount[smithy]);
                     }
-                    assert(G.deck[0][G.deckCount[0]-1]==smithy);
-                    assert(G.deckCount[0]==Backup.deckCount[0]+1);
-                    assert(G.supplyCount[smithy]==0);
+                    if(G.deck[0][G.deckCount[0]-1]!=smithy){
+                        printf("Error:\n\tExpect last card to be smithy.\n Actual card was %s\n:",card[G.deck[0][G.deckCount[0]-1]]);
+                        count++;
+                    }
+                    if(G.deckCount[0]!=Backup.deckCount[0]+1){
+                        printf("Error:\n\tDeck count was not what was expected: \nAcutal count%d Expecting: %d",G.deckCount[0],
+                               Backup.deckCount[0]+1);
+                        count++;
+                    }
+                     if(G.supplyCount[smithy]!=0){
+                        printf("Error:\n\tSupply count not  what was expected:\nActual count%d Expecting: 0",G.supplyCount[smithy]);
+                         count++;
+                     }
                 }
             //Test when the card needs to be added to the hand and the deck is not depleted
                 else if(i==2  &&  j>0){
@@ -63,9 +74,20 @@ int main() {
                         printf("Expecting %d cards in hand, Actual cards in hand %d\n",Backup.handCount[0]+1,G.handCount[0]);
                         printf("Expecting supplyCount to be empty for Smithy, Smithy supplyCount: %d\n",G.supplyCount[smithy]);
                     }
-                    assert(G.hand[0][G.handCount[0]-1]==smithy);
-                    assert(G.handCount[0]==Backup.handCount[0]+1);
-                    assert(G.supplyCount[smithy]==0);
+ 
+                    if(G.hand[0][G.handCount[0]-1]!=smithy){
+                        printf("Error:\n\tExpect last card to be smithy.\n Actual card was %s\n:",card[G.hand[0][G.handCount[0]-1]]);
+                        count++;
+                    }
+                    if(G.handCount[0]!=Backup.handCount[0]+1){
+                        printf("Error:\n\tHand count was not what was expected: \nAcutal count%d Expecting: %d",G.handCount[0],
+                               Backup.handCount[0]+1);
+                        count++;
+                    }
+                    if(G.supplyCount[smithy]!=0){
+                        printf("Error:\n\tSupply count not  what was expected:\nActual count%d Expecting: 0",G.supplyCount[smithy]);
+                        count++;
+                    }
                 }
             //Test when the card needs to added to the discard pile
                 else if(i==3  &&  j>0){
@@ -75,13 +97,27 @@ int main() {
                         printf("Expecting %d cards in hand, Actual cards in hand %d\n",Backup.discardCount[0]+1,G.discardCount[0]);
                         printf("Expecting supplyCount to be empty for Smithy, Smithy supplyCount: %d\n",G.supplyCount[smithy]);
                     }
-                    assert(G.discard[0][G.discardCount[0]-1]==smithy);
-                    assert(G.discardCount[0]==Backup.discardCount[0]+1);
-                    assert(G.supplyCount[smithy]==0);
+
+                    if(G.discard[0][G.discardCount[0]-1]!=smithy){
+                        printf("Error:\n\tExpect last card to be smithy.\n Actual card was %s\n:",card[G.discard[0][G.discardCount[0]-1]]);
+                        count++;
+                    }
+                    if(G.discardCount[0]!=Backup.discardCount[0]+1){
+                        printf("Error:\n\tHand count was not what was expected: \nAcutal count%d Expecting: %d",G.discardCount[0],
+                               Backup.discardCount[0]+1);
+                        count++;
+                    }
+                    if(G.supplyCount[smithy]!=0){
+                        printf("Error:\n\tSupply count not  what was expected:\nActual count%d Expecting: 0",G.supplyCount[smithy]);
+                        count++;
+                    }
                 }
             
         }
     }
-    printf("All tests passed\n");
+    if(count>0)
+        printf("Fount %d errors",count);
+    else
+        printf("All tests passed\n");
     return 0;
 }

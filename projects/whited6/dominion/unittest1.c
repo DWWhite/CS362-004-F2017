@@ -22,7 +22,7 @@ int main() {
         "gardens","mine","remodel","smithy","village","baron","great_hall","minion","steward","tribute","ambassador",
         "cutpurse","embargo","outpost","salvager","sea_hag","treasure_map"};
     int cost;
-
+    int count=0;        //error count
     printf("Testing getCost(int cardNumber):\n");
    
     for (int i=curse-1; i<=treasure_map+1; i++ )
@@ -41,14 +41,20 @@ int main() {
             case copper:
                 if(NOISY_TEST)
                     printf("Expected Cost: 0 Actual Cost: %d\n", cost);
-                assert(cost==0);
+                if(cost!=0){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 2
             case estate:
             case embargo:
                 if(NOISY_TEST)
                     printf("Expected Cost: 2 Actual Cost: %d\n", cost);
-                assert(cost==2);
+                if(cost!=2){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 3
             case silver:
@@ -58,7 +64,10 @@ int main() {
             case ambassador:
                 if(NOISY_TEST)
                     printf("Expected Cost: 3 Actual Cost: %d\n", cost);
-                assert(cost==3);
+                if(cost!=3){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 4
             case feast:
@@ -72,7 +81,10 @@ int main() {
             case treasure_map:
                 if(NOISY_TEST)
                     printf("Expected Cost: 4 Actual Cost: %d\n", cost);
-                assert(cost==4);
+                if(cost!=4){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 5
             case duchy:
@@ -83,30 +95,44 @@ int main() {
             case outpost:
                 if(NOISY_TEST)
                     printf("Expected Cost: 5 Actual Cost: %d\n", cost);
-                assert(cost==5);
+                if(cost!=5){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 6
             case gold:
             case adventurer:
                 if(NOISY_TEST)
                     printf("Expected Cost: 6 Actual Cost: %d\n", cost);
-                assert(cost==6);
+                if(cost!=6){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };
                 break;
         //Cost of 8
             case province:
                 if(NOISY_TEST)
                     printf("Expected Cost: 8 Actual Cost: %d\n", cost);
-                assert(cost==8);
+                if(cost!=0){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };;
                 break;
             default:
                 if(NOISY_TEST)
                     printf("Value outside of range: %d\n", cost);
-                assert(cost==-1);
+                if(cost!=-1){
+                    printf("Error:\n\tUnexpected result: cost= %d\n",cost);
+                    count++;
+                };;
                 break;
         }
     }
     
- 
-    printf("All tests passed\n");
+    if(count>0)
+        printf("Found %d errors\n",count);
+    else
+        printf("All tests passed\n");
     return 0;
 }

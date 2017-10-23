@@ -644,7 +644,8 @@ int getCost(int cardNumber)
 }
 /*Function adventurerRef -Refactored function
 */
-int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int adventurerRef(struct gameState *state)
+//int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
 
     int currentPlayer = whoseTurn(state);
@@ -652,15 +653,16 @@ int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameSt
     int drawntreasure=0;
     int cardDrawn;
     int z = 0;// this is the counter for the temp hand
-   
-    while(drawntreasure<2){
+   //error introduced added an extra treasure drawn
+    while(drawntreasure<3){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
             shuffle(currentPlayer, state);
         }
         drawCard(currentPlayer, state);
         cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+        
         if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-            drawntreasure--;//bug introduced drawntreasure++;
+            drawntreasure++;
         else{
             temphand[z]=cardDrawn;
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
@@ -675,13 +677,13 @@ int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameSt
 }
 /*Function smithyRef -Refactored function
  */
-int smithyRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int smithyRef(struct gameState *state, int handPos)
 {
     int i;
     int currentPlayer = whoseTurn(state);
 
     //+3 Cards
-    for (i = 0; i <= 3; i++)//bug introduced it was (i=0; i<3; i++)
+    for (i = 0; i <=3; i++)//bug introduced it was (i=0; i<3; i++)
     {
         drawCard(currentPlayer, state);
     }
@@ -692,7 +694,7 @@ int smithyRef(int card, int choice1, int choice2, int choice3, struct gameState 
 }
 /*Function feastRef-Refactored function
  */
-int feastRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int feastRef( int choice1, struct gameState *state)
 {
     int i;
     int x;
@@ -741,19 +743,19 @@ int feastRef(int card, int choice1, int choice2, int choice3, struct gameState *
             
         }
     }     
-    /*Introduced bug-- commented out the next few lines
+    
     //Reset Hand
     for (i = 0; i <= state->handCount[currentPlayer]; i++){
         state->hand[currentPlayer][i] = temphand[i];
         temphand[i] = -1;
     }
-    //Reset Hand
-    */
+    
+    
     return 0;
 }
 /*Function remodelRef-Refactored function
  */
-int remodelRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int remodelRef(int choice1, int choice2,  struct gameState *state, int handPos)
 {
     int i;
     int j;
@@ -787,7 +789,7 @@ int remodelRef(int card, int choice1, int choice2, int choice3, struct gameState
 }
 /*Function stewardRef-Refactored function
  */
-int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int stewardRef(int choice1, int choice2, int choice3,  struct gameState *state, int handPos)
 {
     int currentPlayer = whoseTurn(state);
 
@@ -799,6 +801,7 @@ int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState
     }
     else if (choice1 == 2)
     {
+        //Introduced error added 3 coins
         //+2 coins
         state->coins = state->coins + 2;
     }
@@ -808,10 +811,9 @@ int stewardRef(int card, int choice1, int choice2, int choice3, struct gameState
         discardCard(choice2, currentPlayer, state, 1);
         discardCard(choice3, currentPlayer, state, 1);
     }
-    /*Introduced error-commented out the following lines
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
-     */
+
+   // discardCard(handPos, currentPlayer, state, 0);
+
     return 0;
 }
 /*Function: cardEffect
@@ -842,7 +844,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-            adventurerRef(card, choice1, choice2, choice3, state, handPos, bonus);
+            adventurerRef(state);
             break;
             /*
       while(drawntreasure<2){
@@ -864,7 +866,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	z=z-1;
       }
       return 0;
-			
+	*/
     case council_room:
       //+4 Cards
       for (i = 0; i < 4; i++)
@@ -888,10 +890,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       discardCard(handPos, currentPlayer, state, 0);
 			
       return 0;
-			*/
+			
     case feast:
             //call to refactored function
-            feastRef(card, choice1, choice2, choice3, state, handPos, bonus);
+            feastRef(choice1, state);
             break;
             /*
       //gain card with cost up to 5
@@ -986,7 +988,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 			
     case remodel:
             //call to refactored function
-            remodelRef(card, choice1, choice2, choice3, state, handPos,  bonus);
+            remodelRef(choice1, choice2, state, handPos);
             break;
             /*
       j = state->hand[currentPlayer][choice1];  //store card we will trash
@@ -1016,7 +1018,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		*/
     case smithy:
             //call to refactored function
-            smithyRef(card, choice1, choice2, choice3, state, handPos,  bonus);
+            smithyRef( state, handPos);
             break;
             /*
       //+3 Cards
@@ -1028,7 +1030,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       //discard card from hand
       discardCard(handPos, currentPlayer, state, 0);
       return 0;
-		
+	*/
     case village:
       //+1 Card
       drawCard(currentPlayer, state);
@@ -1090,7 +1092,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	    
       
       return 0;
-		*/
+		
     case great_hall:
       //+1 Card
       drawCard(currentPlayer, state);
@@ -1155,7 +1157,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		
     case steward:
             //call to refactored function
-            stewardRef(card, choice1, choice2, choice3, state, handPos,  bonus);
+            stewardRef(choice1, choice2, choice3, state, handPos);
             break;
             /*
       if (choice1 == 1)
