@@ -803,7 +803,7 @@ int stewardRef(int choice1, int choice2, int choice3,  struct gameState *state, 
     {
         //Introduced error added 3 coins
         //+2 coins
-        state->coins = state->coins + 2;
+        state->coins = state->coins + 3;
     }
     else
     {
