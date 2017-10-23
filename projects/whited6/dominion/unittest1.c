@@ -114,7 +114,7 @@ int main() {
             case province:
                 if(NOISY_TEST)
                     printf("Expected Cost: 8 Actual Cost: %d\n", cost);
-                if(cost!=0){
+                if(cost!=8){
                     printf("Error:\n\tUnexpected result: cost= %d\n",cost);
                     count++;
                 };;
