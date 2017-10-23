@@ -2,7 +2,7 @@
 //  unittest2.c
 //  Testing of gainCard function
 //
-//  Created by David Whiteon 10/14/17.
+//  Created by David White on 10/14/17.
 //
 //
 
@@ -37,12 +37,14 @@ int main() {
             
             G.supplyCount[13] = j;                     //assign number of cards to smithy, either 0 or 1 card for testing
             ret_val=gainCard(smithy, &G, i, 0 );
-            
-                if(ret_val==-1 && j==0){
+            //Test if the supply is depleted
+                if(ret_val == -1 &&  j==0){
                     printf("Testing Depleted cards- Supply of Smithy's: %d  Flag: %d\n", G.supplyCount[13], i);
                     printf("Expected a return value of -1, Actual return value: %d\n", ret_val);
                 }
-                if(i==1 && j>0){
+            
+            //Test when the card needs to be added to the deck and the deck is not depleted
+                if(i==1 &&  j>0){
                     printf("Added to deck:\n");
                     if(NOISY_TEST){
                         printf("Expected Smithy card to be added, Last Card added to deck:%s\n", card[G.deck[0][G.deckCount[0]-1]]);
@@ -53,7 +55,8 @@ int main() {
                     assert(G.deckCount[0]==Backup.deckCount[0]+1);
                     assert(G.supplyCount[smithy]==0);
                 }
-                else if(i==2 && j>0){
+            //Test when the card needs to be added to the hand and the deck is not depleted
+                else if(i==2  &&  j>0){
                     printf("Added to hand:\n");
                     if(NOISY_TEST){
                         printf("Expecting Smithy card to be added,  Last card added to hand: %s\n",card[G.hand[0][G.handCount[0]-1]]);
@@ -62,8 +65,10 @@ int main() {
                     }
                     assert(G.hand[0][G.handCount[0]-1]==smithy);
                     assert(G.handCount[0]==Backup.handCount[0]+1);
-                    assert(G.supplyCount[smithy]==0);                }
-                else if(i==3 && j>0){
+                    assert(G.supplyCount[smithy]==0);
+                }
+            //Test when the card needs to added to the discard pile
+                else if(i==3  &&  j>0){
                     printf("Added to discard:\n");
                     if(NOISY_TEST){
                         printf("Expecting Smithy card to be added,  Last card added to hand: %s\n",card[G.discard[0][G.discardCount[0]-1]]);
