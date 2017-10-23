@@ -61,8 +61,8 @@ rununit: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 c
 	./unittest4 &> unittest4.out
 	./cardtest1 &> cardtest1.out
 	./cardtest2 &> cardtest2.out
-	./cardtest2 &> cardtest3.out
-	./cardtest2 &> cardtest4.out	
+	./cardtest3 &> cardtest3.out
+	./cardtest4 &> cardtest4.out	
 	gcov dominion.c >> unittestresult.out
 	cat unittest1.out>>unittestresult.out
 	cat unittest2.out>>unittestresult.out
