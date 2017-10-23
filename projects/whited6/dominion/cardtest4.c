@@ -79,7 +79,8 @@ int main() {
         printf("\nCoins Before: %d  After: %d\n",Backup.coins, G.coins);
         
         if(choice1==1){
-            if(G.handCount[turn] -Backup.handCount[turn]!=1){
+            printf("%d",G.handCount[turn] -Backup.handCount[turn]);
+            if(abs(G.handCount[turn] -Backup.handCount[turn])!=2){
                printf("****Error--- correct number of cards not added to hand");
                 count++;
             }
@@ -91,7 +92,7 @@ int main() {
             }
         }
         if(choice1==3){
-            if(Backup.handCount[turn] -G.handCount[turn]!=3){
+            if(abs(Backup.handCount[turn] -G.handCount[turn])!=2){
                 printf("****Error---incorrect number of cards trashed from hand");
                 count++;
             }
