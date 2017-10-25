@@ -74,6 +74,24 @@ rununit: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 c
 	cat cardtest4.out>>unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
+rununit2: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
+	./unittest1 &> unittest1.out
+	./unittest2 &> unittest2.out
+	./unittest3 &> unittest3.out
+	./unittest4 &> unittest4.out
+	./cardtest1 &> cardtest1.out
+	./cardtest2 &> cardtest2.out
+	./cardtest4 &> cardtest4.out	
+	gcov dominion.c >> unittestresult.out
+	cat unittest1.out>>unittestresult.out
+	cat unittest2.out>>unittestresult.out
+	cat unittest3.out>>unittestresult.out
+	cat unittest4.out>>unittestresult.out
+	cat cardtest1.out>>unittestresult.out
+	cat cardtest2.out>>unittestresult.out
+	cat cardtest4.out>>unittestresult.out
+	cat dominion.c.gcov >> unittestresult.out
+
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
