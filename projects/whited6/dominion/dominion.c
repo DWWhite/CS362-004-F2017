@@ -645,7 +645,6 @@ int getCost(int cardNumber)
 /*Function adventurerRef -Refactored function
 */
 int adventurerRef(struct gameState *state)
-//int adventurerRef(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
 
     int currentPlayer = whoseTurn(state);
