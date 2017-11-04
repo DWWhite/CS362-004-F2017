@@ -17,15 +17,17 @@
 #include <string.h>
 #include <time.h>
 
-void checkStewardRef(struct gameState *state, int handPos);
+int checkStewardRef(int choice1, int choice2, int choice3,  struct gameState *state, int handPos);
 void printGameState(struct gameState *Pre, struct gameState *Post);
 void fillWithCards(struct gameState *state, int cardsPlayed[]);
 int addRandomCard(struct gameState *state, int card);
+int getRandomCard(struct gameState *state);
+int totalErrors;
 
 int main(){
-    int turn,deckCnt,discardCnt,handCnt,players,handPos;
+    int turn,deckCnt,discardCnt,handCnt,players,handPos,choice1,choice2, choice3;
     int seed=1000;
-    int tests=2000;     //number of tests to run
+    int tests=100000;     //number of tests to run
    
     int k[10]={adventurer,council_room,feast,gardens,mine,remodel,smithy,
         village,baron,steward};
@@ -36,23 +38,32 @@ int main(){
     printf("Random Tests.\n");
     
     srand(seed);
-    
+    totalErrors=0;
     for(int rep=0;rep<tests;rep++){
         //initialize gameState
         players=2+ rand()%(MAX_PLAYERS-1);      //range 2-4
         initializeGame(players, k, seed, &G);
         turn = rand()%players;                     //create a random players turn
         deckCnt= rand() %  MAX_DECK;   //cards in deck
-        discardCnt =rand()%(500-deckCnt);  //cards in discard pile
+        discardCnt =rand()%(MAX_DECK-deckCnt);  //cards in discard pile
         handCnt=rand() % (MAX_DECK - deckCnt - discardCnt );   //cards in hand
         G.whoseTurn = turn;
         G.deckCount[turn] =deckCnt;
         G.discardCount[turn]=discardCnt;
-        G.handCount[G.whoseTurn]=handCnt;
+        G.handCount[turn]=handCnt;
         fillWithCards(&G,k);                                  //fills deck, hand and discard with random cards
+        choice1=1+ floor(Random()*3);
+        choice2= floor(Random()*handCnt);
+        choice3 = floor(Random()*handCnt);
         handPos =addRandomCard(&G,steward);
-        checkStewardRef(&G,handPos);
+        printf("*********************************************************\n");
+        printf("\nTest %d:\t", rep);
+        printf("handCnt: %d choice 1: %d, choice 2: %d, choice 3: %d handPos:%d\n ", handCnt,choice1,choice2, choice3, handPos);
+        totalErrors += checkStewardRef(choice1, choice2, choice3, &G, handPos);
+        printf("-----End of Test %d\n",rep);
+        printf("*********************************************************\n\n\n");
     }
+    printf("%d Errors found in %d tests.\n", totalErrors, tests);
 }
 
 /*checkStewardRef
@@ -61,24 +72,76 @@ int main(){
  pre-condition: gamestate has been initialized with values
  post-condition: 
  */
-void checkStewardRef(struct gameState *post, int handPos){
+int checkStewardRef(int choice1, int choice2, int choice3,  struct gameState *state, int handPos){
     int ret,  errors;
-    int turn = post->whoseTurn;
+    int turn = state->whoseTurn;
     struct gameState pre;
     errors =0;
-    memcpy(&pre,post, sizeof(struct gameState));            //save game state
+    memcpy(&pre, state, sizeof(struct gameState));            //save game state
+    ret=stewardRef(choice1, choice2, choice3, state,  handPos);
+    int handDiff=state->handCount[turn] -pre.handCount[turn];
+    int discardFromHandDiff = pre.handCount[turn] - state->handCount[turn];
+    int deckDiff=pre.deckCount[turn] - state->deckCount[turn];
+    int discardDiff = pre.discardCount[turn] - state->discardCount[turn];
+    int handCount = state->handCount[turn];
     
-    //ret=stewardRef(post, handPos);
     if(!ret){
+        if(state->handCount[turn]<0){
+            printf("****Error---Number of  cards in hand dropped below 0.\n");
+            printGameState(&pre,state);
+            errors++;
+        }
+        
+        if(choice1==1){
+            if(handDiff!=1){
+                printf("****Error---Incorrect number of cards in hand: \t%d\n", handDiff);
+                printGameState(&pre,state);
+                errors++;
+            }
+            if((deckDiff != 2) && (abs(deckDiff-2)!=abs(discardDiff))){
+                printf("****Error---Incorrect number of cards in deck: \t %d  removed\n", deckDiff);
+                printGameState(&pre,state);
+                errors++;
+            }
+        }
+        if(choice1==2){
+            if(state->coins!=(pre.coins +2)){
+                printf("****Error---Incorrect number of coins added.\n");
+                errors++;
+            }
+        }
+        
+        if ((choice1 == 1) || (choice1 == 2)){
+            if(discardDiff !=1){
+                printf("****Error---Incorrect number of cards discarded. Expeceted: 1 Actual: %d\n", discardDiff);
+                printGameState(&pre,state);
+                errors++;
+            }
+        }
 
+        if(choice1==3){
+            if((discardFromHandDiff !=3 ) && (handCount > 0) ){
+                printf("pre: %d post: %d\n", pre.handCount[turn], state->handCount[turn]);
+                printf("****Error---Incorrect number of cards trashed from hand: \t%d \n",discardDiff);
+                printGameState(&pre, state);
+                errors++;
+            }
+            //Not sure if this is correct
+            if(abs(discardDiff) != 1){
+                printf("pre: %d post: %d\n", pre.discardCount[turn], state->discardCount[turn]);
+                printf("****Error---Incorrect number of cards added to discard deck: \t%d \n",discardDiff);
+                printGameState(&pre, state);
+                errors++;
+            }
     }
     //print number of errors in this iteration.
     if(errors)
         printf("%d errors in code\n",errors);
     else
         printf("Passed Tests\n");
+    }
+    return errors;
 }
-
 /*fillWithCards
  input: gameState
  output: nothing
@@ -123,9 +186,10 @@ int addRandomCard(struct gameState *state, int card){
     else {
         state->hand[turn][handPos]=card;
     }
-//    printf("%d\n",handPos);
     return handPos;
 }
+
+
 
 /*printfGameState
  input: gamestate at 2 different periods
@@ -145,42 +209,51 @@ void printGameState( struct gameState *Pre, struct gameState *Post){
     int postHandCnt=Post->handCount[who];
     int preDiscardCnt=Pre->discardCount[who];
     int postDiscardCnt=Post->discardCount[who];
-    
-    printf("Deck-  \tPre: %d  Post: %d\n",preDeckCnt, postDeckCnt);
-    printf("Cards Added:\n\t");
+    printf("**************************************************\n");
+    printf("**************************************************\n");
+    printf("\t\tGame State before and after:");
+    printf("\n\nDeck-  \tPre: %d  Post: %d\n",preDeckCnt, postDeckCnt);
+  
     //Cards Added to deck
     if(postDeckCnt -preDeckCnt >0){
+        printf("Cards Added\n\t");
         for(int i=preDeckCnt;i<postDeckCnt;i++)
             printf("%s ", card[ Post->deck[who][i] ]);
     }
     //Cards taken from Deck
     else{
+        printf("Cards Removed\n\t");
         for(int i=postDeckCnt;i<preDeckCnt;i++)
             printf("%s ", card[ Pre->deck[who][i] ]);
     }
     printf("\nHand- \tPre: %d Post: %d\n",preHandCnt,postHandCnt);
-    printf("Cards Added\n\t");
+    
     //Cards Added to hand
     if(postHandCnt -preHandCnt >0){
+        printf("Cards Added\n\t");
         for(int i=preHandCnt;i<postHandCnt;i++)
             printf("%s ", card[ Post->hand[who][i] ]);
     }
     //Cards taken from Deck
     else{
+        printf("Cards Removed\n\t");
         for(int i=postHandCnt;i<preHandCnt;i++)
             printf("%s ", card[ Pre->hand[who][i] ]);
     }
     printf("\nDiscard- \tPre: %d Post: %d\n", preDiscardCnt, postDiscardCnt);
-    printf("Cards Added\n\t");
+
     //Cards Added to discard
     if(postDiscardCnt -preDiscardCnt >0){
+        printf("Cards Added\n\t");
         for(int i=preDiscardCnt;i<postDiscardCnt;i++)
             printf("%s ", card[ Post->discard[who][i] ]);
     }
     //Cards taken from Discard
     else{
+        printf("Cards Added\n\t");
         for(int i=postDiscardCnt;i<preDiscardCnt;i++)
             printf("%s ", card[ Pre->discard[who][i] ]);
     }
-    printf("\n");
+    
+    printf("\n**************************************************\n");
 }

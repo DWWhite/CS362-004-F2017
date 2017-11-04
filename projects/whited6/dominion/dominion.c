@@ -810,8 +810,9 @@ int stewardRef(int choice1, int choice2, int choice3,  struct gameState *state, 
         discardCard(choice2, currentPlayer, state, 1);
         discardCard(choice3, currentPlayer, state, 1);
     }
-
-   // discardCard(handPos, currentPlayer, state, 0);
+    
+    //Remove card from hand
+   discardCard(handPos, currentPlayer, state, 0);
 
     return 0;
 }

@@ -25,7 +25,7 @@ int addRandomSmithy(struct gameState *state);
 int main(){
     int turn,deckCnt,discardCnt,handCnt,players,handPos;
     int seed=1000;
-    int tests=2000;     //number of tests to run
+    int tests=100000;     //number of tests to run
    
     int k[10]={adventurer,council_room,feast,gardens,mine,remodel,smithy,
         village,baron,great_hall};
