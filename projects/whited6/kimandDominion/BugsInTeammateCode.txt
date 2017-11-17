@@ -1,0 +1,63 @@
+ID:  10-15-17-1 
+Product:Dominion
+Bug: 
+	Classification: Game Rule Violation
+	Can it be reproduced: The error is reproduced every time the card is played
+
+Description: 
+	Summary: The Smithy card results in one too many cards drawn from deck and placed in the hand.
+	What happened:	1) Smithy card is played
+					2) 4 cards are drawn from the deck
+					3) The hand count raises from x to x+4 
+					4) The deck count lowers from y to y-4
+	What is the error:  No error messages occur.
+	How to reproduce error:  The error will be reproduced by playing the Smithy card.
+	Expected result:  Three cards to be drawn from the deck, resulting in 3 cards being added to the hand.
+
+Severity:  High, the game can not be played properly with this error.
+
+Priority:  High, the error should be fixed soon.  The time and effort to fix this error is minimal and the severity of the error is high. By fixing this error, the game will have one less rule being violated.
+
+
+
+
+
+ID:  10-15-17-2 
+Product:  Dominion
+Bug:
+	Classification:  Game Rule Violation
+	Can it be reproduced:  The error is reproduced any time the card is played
+
+Description:  
+	Summary: The adventure card results in too many treasure hands are drawn from the deck and placed in the hand.
+	What happened:  1)  Adventurer card is played
+					2)  Cards are drawn from deck until 4 treasures are found.
+					3)  The hand count raises from x to x+4
+	What is the error:  No error messages occur.
+	How to reproduce error:  The error will be reproduced by playing the adventurer card.
+	Expected result:  Two treasure cards are added to the hand 
+
+Severity:  High, the game cannot be played properly with this error.
+Priority:  High, the fix should be a top priority.  The time and  effort to fix this error is minimal and the severity of the error is high.  By fixing the error, the game will have one less rule violation.
+
+
+
+
+
+ID:  10-15-17-3 
+Product:  Dominion
+Bug:
+	Classification:  Serious Bug
+	Can it be reproduced:  The error is reproduced any time a card is discarded
+
+Description:  
+	Summary: Cards are not being added to the discard pile
+	What happened:  1)  A card is played.
+					2)  The card is removed from the hand.  
+	What is the error:  No error messages occur.
+	How to reproduce error:  The error will be reproduced by playing any card.
+	Expected result:  After cards have been played, they are taken from the hand and placed into the discard pile.  The hand count reduces by the number of cards played the discard pile increase by the number of cards played that aren't trashed.
+
+Severity:  High, the game cannot be played properly with this error.
+Priority:  High, the fix should be a top priority.  The time and  effort to fix this error is minimal and the severity of the error is high.  By fixing the error, the game will have one less rule violation.
+
