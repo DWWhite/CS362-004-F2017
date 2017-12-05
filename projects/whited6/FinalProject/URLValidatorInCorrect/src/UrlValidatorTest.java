@@ -66,6 +66,7 @@ public class UrlValidatorTest extends TestCase {
 
 		for(int i=0;i<validURL.length;i++) {
 			String testURL = validURL[i];
+//			assertTrue(urlVal.isValid(testURL));
 			if(!(urlVal.isValid(testURL))) {
 				System.out.println("--Expected Valid: "+testURL+"  *** Test reported invalid");
 				errorCount++;
@@ -104,6 +105,7 @@ public class UrlValidatorTest extends TestCase {
 
 		for(int i=0;i<invalidURL.length;i++) {
 			String testURL = invalidURL[i];
+//			assertFalse(urlVal.isValid(testURL));
 			if(urlVal.isValid(testURL)) {
 				System.out.println("--Expected Invalid: "+testURL+"  ***Test reported valid");
 				errorCount++;
@@ -126,6 +128,7 @@ public class UrlValidatorTest extends TestCase {
 			testURL = testScheme[i].item + "www.amazon.com";
 			testValid = testScheme[i].valid;
 			returnedVal = urlVal.isValid(testURL);
+//			assertFalse(testValid != returnedVal);
 			if(testValid != returnedVal ) {
 				System.out.println("--Expected: "+ testValid+ " \t" +testURL+"\t  *** Test reported: "+returnedVal);
 			}
@@ -145,6 +148,7 @@ public class UrlValidatorTest extends TestCase {
 			testURL = "http://" + testHost[i].item;
 			testValid = testHost[i].valid;
 			returnedVal=urlVal.isValid(testURL);
+//			assertFalse(testValid != returnedVal);
 			if(testValid!= returnedVal) {
 				System.out.println("--Expected: "+ testValid+ " \t" +testURL+"\t  *** Test reported: "+returnedVal);
 			}
@@ -158,10 +162,11 @@ public class UrlValidatorTest extends TestCase {
 		Boolean testValid, returnedVal;
 		System.out.println("Testing ports");
 
-		for(int i=0;i<testScheme.length;i++) {
+		for(int i=0;i<testPort.length;i++) {
 			testURL = "http://www.amazon.com" + testPort[i].item;
 			testValid = testPort[i].valid;
 			returnedVal = urlVal.isValid(testURL);
+//			assertFalse(testValid != returnedVal);
 			if(testValid != returnedVal) {
 				System.out.println("--Expected: "+ testValid + " \t" +testURL+"\t  *** Test reported: "+returnedVal);
 			}
@@ -179,6 +184,7 @@ public class UrlValidatorTest extends TestCase {
 			testURL = "http://www.amazon.com" + testPath[i].item;
 			testValid = testPath[i].valid;
 			returnedVal = urlVal.isValid(testURL);
+//			assertFalse(testValid != returnedVal);
 			if(testValid != returnedVal) {
 				System.out.println("--Expected: "+ testValid + " \t" +testURL+"\t  *** Test reported: "+returnedVal);
 		
@@ -197,6 +203,7 @@ public class UrlValidatorTest extends TestCase {
 			testURL = "http://www.amazon.com/" + testQuery[i].item;
 			testValid = testQuery[i].valid;
 			returnedVal = urlVal.isValid(testURL);
+//			assertFalse(testValid != returnedVal);
 			if(testValid != returnedVal) {
 				System.out.println("--Expected: "+ testValid + " \t" +testURL+"\t  *** Test reported: "+returnedVal);
 			}
@@ -233,6 +240,7 @@ public class UrlValidatorTest extends TestCase {
 							boolean queryV = testQuery[m].valid;
 							boolean urlBool= schemeV & hostV & portV & pathV & queryV;
 							boolean retVal=urlVal.isValid(schemeI+hostI+portI+pathI+queryI);
+//							assertFalse(retVal != urlBool);
 							if(retVal != urlBool) {
 								System.out.println("Expected: "+ urlBool + "\t Actual: "+
 										retVal+" \t"+schemeI+hostI+portI+pathI+queryI);
